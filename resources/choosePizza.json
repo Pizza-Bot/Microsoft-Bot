@@ -39,6 +39,7 @@
     {
       "type": "Action.Submit",
       "title": "Submit",
+      "style": "positive",
       "data": {
         "id": "pizza_choice"
       }

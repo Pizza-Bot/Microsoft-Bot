@@ -14,12 +14,15 @@ const { MessageFactory, CardFactory, ActivityTypes } = require("botbuilder");
 
 const choosePizzaCard = require("../resources/choosePizza.json");
 
+const toppingsChoiceCard = require("../resources/toppingsChoice.json");
+
 const CONV_PROFILE = "CONV_PROFILE";
 const TEXT_PROMPT = "TEXT_PROMPT";
 const CHOICE_PROMPT = "CHOICE_PROMPT";
 const NUMBER_PROMPT = "NUMBER_PROMPT";
 const CONFIRM_PROMPT = "CONFIRM_PROMPT";
 const PIZZA_PROMPT = "PIZZA_PROMPT";
+const TOPPINGS_PROMPT = "TOPPINGS_PROMPT";
 const WATERFALL_DIALOG = "WATERFALL_DIALOG";
 
 class MainDialog extends ComponentDialog {
@@ -36,11 +39,15 @@ class MainDialog extends ComponentDialog {
     this.addDialog(new ConfirmPrompt(CONFIRM_PROMPT));
     this.addDialog(new NumberPrompt(NUMBER_PROMPT));
     this.addDialog(new ActivityPrompt(PIZZA_PROMPT, this.pizzaFormValidator));
+    this.addDialog(
+      new ActivityPrompt(TOPPINGS_PROMPT, this.toppingsFormValidator)
+    );
 
     this.addDialog(
       new WaterfallDialog(WATERFALL_DIALOG, [
         this.choosePizzaStep.bind(this),
         this.chooseSizeStep.bind(this),
+        this.chooseToppingsStep.bind(this),
         this.summary.bind(this),
       ])
     );
@@ -90,10 +97,37 @@ class MainDialog extends ComponentDialog {
     });
   }
 
-  async summary(step) {
+  async chooseToppingsStep(step) {
     step.values.size = step.result.value;
 
-    let message = `Congratulations!, you've ordered a ${step.values.size} ${step.values.pizza} `;
+    await step.context.sendActivity(`You've selected ${step.values.size}`);
+
+    const toppingsForm = MessageFactory.attachment(
+      CardFactory.adaptiveCard(toppingsChoiceCard)
+    );
+
+    return await step.prompt(TOPPINGS_PROMPT, {
+      prompt: toppingsForm,
+    });
+  }
+
+  async toppingsFormValidator(prompt) {
+    const activity = prompt.recognized.value;
+
+    if (activity.type == ActivityTypes.Message) {
+      if (activity.value) {
+        prompt.recognized.value = activity.value;
+        return true;
+      } else {
+        await prompt.context.sendActivity(`Please fill the form and submit`);
+      }
+    }
+  }
+
+  async summary(step) {
+    step.values.toppings = step.result.toppingsChoice;
+
+    let message = `Congratulations!, you've ordered a ${step.values.size} ${step.values.pizza} with ${step.result.toppingsChoice} toppings `;
 
     await step.context.sendActivity(message);
 
@@ -108,7 +142,6 @@ class MainDialog extends ComponentDialog {
     const dialogContext = await dialogSet.createContext(turnContext);
     const results = await dialogContext.continueDialog();
     if (results.status == DialogTurnStatus.empty) {
-      console.log("Inside run");
       await dialogContext.beginDialog(this.id);
     }
   }

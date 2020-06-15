@@ -36,7 +36,6 @@ class PizzaBot extends ActivityHandler {
     });
 
     this.onMessage(async (context, next) => {
-      console.log("Main Dialog");
       await this.dialog.run(context, this.dialogState);
       await next();
     });
