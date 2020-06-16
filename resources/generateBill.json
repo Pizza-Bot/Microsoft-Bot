@@ -2,26 +2,20 @@
   "type": "AdaptiveCard",
   "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
   "version": "1.2",
-  "$data": {
-    "userDetails": {
-      "name": "achyuth",
-      "address": "Hyderabad"
-    }
-  },
   "body": [
     {
       "type": "Container",
-      "style": "emphasis",
+      "style": "default",
       "items": [
         {
           "type": "Container",
           "items": [
             {
               "type": "TextBlock",
-              "size": "medium",
-              "weight": "bolder",
+              "size": "Medium",
+              "weight": "Bolder",
               "text": "Order Details",
-              "horizontalAlignment": "center"
+              "horizontalAlignment": "Center"
             }
           ]
         },
@@ -33,26 +27,26 @@
               "facts": [
                 {
                   "title": "Name",
-                  "value": "${name}"
+                  "value": "Chandu"
                 },
                 {
                   "title": "Phone number",
                   "value": "9848022338"
                 },
                 {
-                  "title": "Email",
-                  "value": "abcd123@gmail.com"
+                  "title": "Address",
+                  "value": "Hyderabad"
                 }
-              ]
+              ],
+              "height": "stretch"
             },
             {
               "type": "TextBlock",
-              "text": "Pizza Details",
+              "text": "Pizza Bill",
               "horizontalAlignment": "Center",
               "fontType": "Default",
               "weight": "Bolder",
-              "size": "Medium",
-              "color": "Dark"
+              "size": "Medium"
             },
             {
               "type": "ColumnSet",

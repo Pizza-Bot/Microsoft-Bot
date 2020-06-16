@@ -18,6 +18,8 @@ const toppingsChoiceCard = require("../resources/toppingsChoice.json");
 
 const userDetails = require("../resources/userDetails.json");
 
+const billForm = require("../resources/generateBill.json");
+
 const CONV_PROFILE = "CONV_PROFILE";
 const TEXT_PROMPT = "TEXT_PROMPT";
 const CHOICE_PROMPT = "CHOICE_PROMPT";
@@ -57,7 +59,9 @@ class MainDialog extends ComponentDialog {
         this.chooseSizeStep.bind(this),
         this.chooseToppingsStep.bind(this),
         this.quantityStep.bind(this),
+        this.confirmAbovePizzaOrder.bind(this),
         this.giveUserDetailsStep.bind(this),
+        this.populateBillAndAskForPaymentOption.bind(this),
         this.summary.bind(this),
       ])
     );
@@ -149,18 +153,30 @@ class MainDialog extends ComponentDialog {
     );
   }
 
-  async giveUserDetailsStep(step) {
+  async confirmAbovePizzaOrder(step) {
     step.values.quantity = step.result;
 
-    let message = `Now please provide your details down below`;
+    let message = `You've Ordered ${step.values.quantity} ${step.values.size} ${step.values.pizza} with ${step.values.toppings} toppings. Would you like to confirm it? `;
 
-    await step.context.sendActivity(message);
+    return await step.prompt(CONFIRM_PROMPT, { prompt: message });
+  }
 
-    const userForm = MessageFactory.attachment(
-      CardFactory.adaptiveCard(userDetails)
-    );
+  async giveUserDetailsStep(step) {
+    if (step.result) {
+      let message = `Now please provide your details down below`;
 
-    return await step.prompt(USER_PROMPT, { prompt: userForm });
+      await step.context.sendActivity(message);
+
+      const userForm = MessageFactory.attachment(
+        CardFactory.adaptiveCard(userDetails)
+      );
+
+      return await step.prompt(USER_PROMPT, { prompt: userForm });
+    } else {
+      await step.context.sendActivity("Okay, we have cancelled the order");
+    }
+
+    return await step.endDialog();
   }
 
   async userDetailsFormValidator(prompt) {
@@ -172,12 +188,46 @@ class MainDialog extends ComponentDialog {
         return true;
       } else {
         await prompt.context.sendActivity(`Please fill the form and submit`);
+
+        await prompt.context.sendActivity(`Type anything to order again`);
       }
     }
   }
 
-  async summary(step) {
+  async populateBillAndAskForPaymentOption(step) {
     step.values.userDetails = step.result;
+
+    const userForm = MessageFactory.attachment(
+      CardFactory.adaptiveCard(billForm)
+    );
+
+    await step.context.sendActivity(userForm);
+
+    return await step.prompt(CHOICE_PROMPT, {
+      prompt: "Please Enter your Choice of Payment",
+      choices: ChoiceFactory.toChoices([
+        "COD",
+        "Credit/Debit Card",
+        "UPI Payment",
+      ]),
+    });
+  }
+
+  // async BillFormValidator(prompt) {
+  //   const activity = prompt.recognized.value;
+
+  //   if (activity.type == ActivityTypes.Message) {
+  //     if (activity.value) {
+  //       prompt.recognized.value = activity.value;
+  //       return true;
+  //     } else {
+  //       await prompt.context.sendActivity(`Please fill the form and submit`);
+  //     }
+  //   }
+  // }
+
+  async summary(step) {
+    step.values.paymentMethod = step.result;
 
     console.log(step.result);
 
