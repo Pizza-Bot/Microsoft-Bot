@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "adaptivecards": "^1.2.6",
+        "axios": "^0.19.2",
         "botbuilder": "~4.9.0",
         "botbuilder-dialogs": "^4.9.2",
         "restify": "~8.5.1"

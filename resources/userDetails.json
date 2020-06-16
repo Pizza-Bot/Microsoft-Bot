@@ -1,0 +1,35 @@
+{
+  "type": "AdaptiveCard",
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.2",
+  "body": [
+    {
+      "type": "TextBlock",
+      "size": "large",
+      "text": "User Details"
+    },
+    {
+      "type": "Input.Text",
+      "placeholder": "Name",
+      "id": "name"
+    },
+    {
+      "type": "Input.Text",
+      "placeholder": "Address",
+      "id": "address"
+    },
+    {
+      "type": "Input.Text",
+      "placeholder": "Phone Number",
+      "id": "phonenumber"
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Submit",
+      "style": "positive",
+      "id": "submit"
+    }
+  ]
+}

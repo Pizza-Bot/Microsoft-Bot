@@ -16,12 +16,15 @@ const choosePizzaCard = require("../resources/choosePizza.json");
 
 const toppingsChoiceCard = require("../resources/toppingsChoice.json");
 
+const userDetails = require("../resources/userDetails.json");
+
 const CONV_PROFILE = "CONV_PROFILE";
 const TEXT_PROMPT = "TEXT_PROMPT";
 const CHOICE_PROMPT = "CHOICE_PROMPT";
 const NUMBER_PROMPT = "NUMBER_PROMPT";
 const CONFIRM_PROMPT = "CONFIRM_PROMPT";
 const PIZZA_PROMPT = "PIZZA_PROMPT";
+const USER_PROMPT = "USER_PROMPT";
 const TOPPINGS_PROMPT = "TOPPINGS_PROMPT";
 const WATERFALL_DIALOG = "WATERFALL_DIALOG";
 
@@ -37,10 +40,15 @@ class MainDialog extends ComponentDialog {
     this.addDialog(new TextPrompt(TEXT_PROMPT));
     this.addDialog(new ChoicePrompt(CHOICE_PROMPT));
     this.addDialog(new ConfirmPrompt(CONFIRM_PROMPT));
-    this.addDialog(new NumberPrompt(NUMBER_PROMPT));
+    this.addDialog(
+      new NumberPrompt(NUMBER_PROMPT, this.quantityPromptValidator)
+    );
     this.addDialog(new ActivityPrompt(PIZZA_PROMPT, this.pizzaFormValidator));
     this.addDialog(
       new ActivityPrompt(TOPPINGS_PROMPT, this.toppingsFormValidator)
+    );
+    this.addDialog(
+      new ActivityPrompt(USER_PROMPT, this.userDetailsFormValidator)
     );
 
     this.addDialog(
@@ -48,6 +56,8 @@ class MainDialog extends ComponentDialog {
         this.choosePizzaStep.bind(this),
         this.chooseSizeStep.bind(this),
         this.chooseToppingsStep.bind(this),
+        this.quantityStep.bind(this),
+        this.giveUserDetailsStep.bind(this),
         this.summary.bind(this),
       ])
     );
@@ -64,15 +74,6 @@ class MainDialog extends ComponentDialog {
     return await step.prompt(PIZZA_PROMPT, {
       prompt: pizzaForm,
     });
-
-    // return await step.prompt(CHOICE_PROMPT, {
-    //   prompt: "Please Enter your Pizza Choice",
-    //   choices: ChoiceFactory.toChoices([
-    //     "Paneer Pizza",
-    //     "Veg Pizza",
-    //     "Egg Pizza",
-    //   ]),
-    // });
   }
 
   async pizzaFormValidator(prompt) {
@@ -89,7 +90,7 @@ class MainDialog extends ComponentDialog {
   }
 
   async chooseSizeStep(step) {
-    step.values.pizza = step.result.FoodChoice;
+    step.values.pizza = step.result.pizzachoice;
 
     return await step.prompt(CHOICE_PROMPT, {
       prompt: "Please Enter your Pizza Size",
@@ -124,10 +125,63 @@ class MainDialog extends ComponentDialog {
     }
   }
 
-  async summary(step) {
+  async quantityStep(step) {
     step.values.toppings = step.result.toppingsChoice;
 
-    let message = `Congratulations!, you've ordered a ${step.values.size} ${step.values.pizza} with ${step.result.toppingsChoice} toppings `;
+    let message = `You've choosen ${step.result.toppingsChoice}. Now give the number of pizza quantity`;
+
+    await step.context.sendActivity(message);
+
+    const promptOptions = {
+      prompt: "Quantity Required",
+      retryPrompt: "Value must be greater than 0 and less than 150",
+    };
+
+    return step.prompt(NUMBER_PROMPT, promptOptions);
+  }
+
+  async quantityPromptValidator(promptContext) {
+    // This condition is our validation rule. You can also change the value at this point.
+    return (
+      promptContext.recognized.succeeded &&
+      promptContext.recognized.value > 0 &&
+      promptContext.recognized.value < 150
+    );
+  }
+
+  async giveUserDetailsStep(step) {
+    step.values.quantity = step.result;
+
+    let message = `Now please provide your details down below`;
+
+    await step.context.sendActivity(message);
+
+    const userForm = MessageFactory.attachment(
+      CardFactory.adaptiveCard(userDetails)
+    );
+
+    return await step.prompt(USER_PROMPT, { prompt: userForm });
+  }
+
+  async userDetailsFormValidator(prompt) {
+    const activity = prompt.recognized.value;
+
+    if (activity.type == ActivityTypes.Message) {
+      if (activity.value) {
+        prompt.recognized.value = activity.value;
+        return true;
+      } else {
+        await prompt.context.sendActivity(`Please fill the form and submit`);
+      }
+    }
+  }
+
+  async summary(step) {
+    step.values.userDetails = step.result;
+
+    console.log(step.result);
+
+    let message = `Congratulations!, you've ordered ${step.values.quantity} ${step.values.size} ${step.values.pizza} with ${step.values.toppings} toppings `;
 
     await step.context.sendActivity(message);
 
