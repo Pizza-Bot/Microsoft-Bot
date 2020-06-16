@@ -1,0 +1,128 @@
+{
+  "type": "AdaptiveCard",
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.2",
+  "body": [
+    {
+      "type": "Container",
+      "style": "default",
+      "items": [
+        {
+          "type": "Container",
+          "items": [
+            {
+              "type": "TextBlock",
+              "size": "Medium",
+              "weight": "Bolder",
+              "text": "Order Details",
+              "horizontalAlignment": "Center"
+            }
+          ]
+        },
+        {
+          "type": "Container",
+          "items": [
+            {
+              "type": "FactSet",
+              "facts": [
+                {
+                  "title": "Name",
+                  "value": "Chandu"
+                },
+                {
+                  "title": "Phone number",
+                  "value": "9848022338"
+                },
+                {
+                  "title": "Address",
+                  "value": "Hyderabad"
+                }
+              ],
+              "height": "stretch"
+            },
+            {
+              "type": "TextBlock",
+              "text": "Pizza Bill",
+              "horizontalAlignment": "Center",
+              "fontType": "Default",
+              "weight": "Bolder",
+              "size": "Medium"
+            },
+            {
+              "type": "ColumnSet",
+              "columns": [
+                {
+                  "type": "Column",
+                  "width": "stretch",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "Base Pizza",
+                      "weight": "Bolder"
+                    },
+                    {
+                      "type": "TextBlock",
+                      "text": "Pizza Size",
+                      "weight": "Bolder"
+                    },
+                    {
+                      "type": "TextBlock",
+                      "text": "Toppings",
+                      "weight": "Bolder"
+                    }
+                  ]
+                },
+                {
+                  "type": "Column",
+                  "width": "stretch",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "100"
+                    },
+                    {
+                      "type": "TextBlock",
+                      "text": "100"
+                    },
+                    {
+                      "type": "TextBlock",
+                      "text": "50"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "TextBlock",
+              "text": "Discount Details (if applicable)",
+              "horizontalAlignment": "Center",
+              "size": "Medium",
+              "weight": "Bolder"
+            },
+            {
+              "type": "FactSet",
+              "facts": [
+                {
+                  "title": "Total Price",
+                  "value": "              500"
+                },
+                {
+                  "title": "Discounted Price",
+                  "value": "              400"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "spacing": "None"
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "style": "positive",
+      "title": "OK"
+    }
+  ]
+}

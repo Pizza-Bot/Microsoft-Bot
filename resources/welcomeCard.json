@@ -1,19 +1,31 @@
 {
   "type": "AdaptiveCard",
-  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-  "version": "1.2",
   "body": [
     {
       "type": "TextBlock",
-      "text": "Welcome to Pizza Ordering Bot",
-      "size": "large",
-      "fontType": "Default",
-      "weight": "bolder"
+      "weight": "bolder",
+      "size": "medium",
+      "text": "Welcome to Capgemini Pizza Corner!"
+    },
+    {
+      "type": "Image",
+      "altText": "Pizza Bot",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/6/64/NYPizzaPie.jpg",
+      "size": "stretch"
     },
     {
       "type": "TextBlock",
-      "text": "Sample bot used to order pizza, modify toppings and generate dynamic bill",
+      "text": "We make fresh and delicious pizza's, made with natural ingredients, delivered right to your door!",
       "wrap": true
     }
-  ]
+  ],
+  "actions": [
+    {
+      "type": "Action.OpenUrl",
+      "title": "View locations in Hyderabad",
+      "url": "https://www.google.com/search?safe=active&sxsrf=ALeKk00Uq1Of31oJNh26mDTqloLuZ0BbHw%3A1591784706154&ei=ArXgXuuNCffSz7sPuJGQqAc&q=Hyderabad+pizza&oq=Hyderabad+pizza&gs_lcp=CgZwc3ktYWIQAzICCAAyAggAMgIIADICCAAyAggAMgIIADICCAAyBggAEBYQHjIGCAAQFhAeMgYIABAWEB46BAgAEEc6BwgjEOoCECc6BQgAEJECOgQIABBDOgUIABCxAzoFCAAQgwE6BwgjECcQnQI6BAgjECc6DAgjECcQnQIQRhCAAjoNCAAQsQMQkQIQRhD7AVDKjgNYkrsDYO6-A2gBcAF4AYABqgSIAeUUkgEIMC4xNC41LTGYAQCgAQGqAQdnd3Mtd2l6sAEK&sclient=psy-ab&ved=0ahUKEwjrluCPhPfpAhV36XMBHbgIBHUQ4dUDCAw&uact=5"
+    }
+  ],
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.0"
 }
