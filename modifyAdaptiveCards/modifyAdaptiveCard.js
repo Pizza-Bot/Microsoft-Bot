@@ -200,15 +200,13 @@ class ModifyAdaptiveCard {
       // paymentMethod: "string",
     };
 
-    let response = RestAPI.postCall("userinfo", postJson);
+    let response = await RestAPI.postCall("userinfo", postJson);
 
     console.log(response);
   }
 
   static generateUserDetailsForBill(userDetails) {
     let facts = [];
-
-    console.log(Object.keys(userDetails));
 
     // for (let i = 0; i < Object.keys(userDetails).length; i++) {
     //   facts.push({
@@ -222,21 +220,23 @@ class ModifyAdaptiveCard {
       facts.push({ title: key, value: jsonValue });
     });
 
-    console.log(facts);
-
     return facts;
   }
 
   static async modifyingBillCard(userDetails) {
-    let generateBillJson = JSON.parse(JSON.stringify(generateBill));
+    // let generateBillJson = JSON.parse(JSON.stringify(generateBill));
+
+    let generateBillJson = generateBill;
 
     // delete generateBillJson.body[0].items[1].items[0]["facts"];
 
-    generateBillJson.body[0].items[1].items[0].facts = [
-      ...this.generateUserDetailsForBill(userDetails),
-    ];
+    let userArrayDetails = this.generateUserDetailsForBill(userDetails);
 
-    console.log(generateBillJson.body[0].items[1].items[0].facts);
+    // delete generateBillJson.body[1].facts;
+
+    generateBillJson.body[1]["facts"] = [...userArrayDetails];
+
+    console.log(generateBillJson.body[1]["facts"]);
 
     return generateBillJson;
   }
