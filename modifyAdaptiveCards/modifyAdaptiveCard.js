@@ -1,5 +1,7 @@
 const choosePizza = require("../resources/choosePizza.json");
 
+const toppingsCard = require("../resources/toppingsChoice.json");
+
 const { RestAPI } = require("../rest-call/restApi");
 
 class ModifyAdaptiveCard {
@@ -9,7 +11,7 @@ class ModifyAdaptiveCard {
 
   static toppingsList = [];
 
-  static printingArray = async (url, key) => {
+  static printingPizzaArray = async (url, key) => {
     const response = await RestAPI.getCall(url);
     // console.log(response);
 
@@ -24,10 +26,25 @@ class ModifyAdaptiveCard {
     return valuesArray;
   };
 
+  static printingToppingsArray = async (url, key) => {
+    const response = await RestAPI.getCall(url);
+    // console.log(response);
+
+    this.toppingsList = [...response];
+
+    let valuesArray = [];
+
+    response.map((value) => {
+      valuesArray.push({ title: value[key], value: value[key] });
+    });
+
+    return valuesArray;
+  };
+
   static async modifyChoosePizzaCard() {
     let choosePizzaJson = JSON.parse(JSON.stringify(choosePizza));
 
-    const pizzaList = await ModifyAdaptiveCard.printingArray(
+    const pizzaList = await ModifyAdaptiveCard.printingPizzaArray(
       "realpizza",
       "realPizzaName"
     );
@@ -56,6 +73,25 @@ class ModifyAdaptiveCard {
 
     return sizesArray;
   }
+
+  static async getToppingsCard() {
+    let toppingsCardJson = JSON.parse(JSON.stringify(toppingsCard));
+
+    const toppingsList = await ModifyAdaptiveCard.printingToppingsArray(
+      "toppings",
+      "toppingsName"
+    );
+
+    delete toppingsCardJson.body[1].columns[0].items[0]["choices"];
+
+    toppingsCardJson.body[1].columns[0].items[0]["choices"] = [...toppingsList];
+
+    return toppingsCardJson;
+  }
 }
+
+// class Modification {
+//   static realPizzasList = [];
+// }
 
 module.exports.ModifyAdaptiveCard = ModifyAdaptiveCard;
