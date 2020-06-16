@@ -89,7 +89,7 @@ class MainDialog extends ComponentDialog {
   }
 
   async chooseSizeStep(step) {
-    step.values.pizza = step.result.pizzachoice;
+    step.values.pizza = step.result.FoodChoice;
 
     return await step.prompt(CHOICE_PROMPT, {
       prompt: "Please Enter your Pizza Size",

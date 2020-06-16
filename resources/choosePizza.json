@@ -9,28 +9,49 @@
         {
           "type": "TextBlock",
           "text": "Choose Pizza"
+        }
+      ]
+    },
+    {
+      "type": "ColumnSet",
+      "columns": [
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "Input.ChoiceSet",
+              "choices": [
+                {
+                  "title": "Veg Pizza",
+                  "value": "Veg Pizza"
+                },
+                {
+                  "title": "Paneer Pizza",
+                  "value": "Paneer Pizza"
+                },
+                {
+                  "title": "Cheese Pizza",
+                  "value": "Cheese Pizza"
+                }
+              ],
+              "id": "pizzachoice",
+              "placeholder": "choose pizza",
+              "style": "expanded",
+              "separator": true,
+              "wrap": true
+            }
+          ]
         },
         {
-          "type": "Input.ChoiceSet",
-          "choices": [
+          "type": "Column",
+          "width": "stretch",
+          "items": [
             {
-              "title": "Veg Pizza",
-              "value": "Veg Pizza"
-            },
-            {
-              "title": "Paneer Pizza",
-              "value": "Paneer Pizza"
-            },
-            {
-              "title": "Cheese Pizza",
-              "value": "Cheese Pizza"
+              "type": "Image",
+              "url": "https://www.biggerbolderbaking.com/wp-content/uploads/2019/07/15-Minute-Pizza-WS-Thumbnail.png"
             }
-          ],
-          "id": "pizzachoice",
-          "placeholder": "choose pizza",
-          "style": "expanded",
-          "separator": true,
-          "wrap": true
+          ]
         }
       ]
     }

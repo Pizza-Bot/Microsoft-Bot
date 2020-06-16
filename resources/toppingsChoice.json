@@ -8,7 +8,7 @@
       "items": [
         {
           "type": "TextBlock",
-          "text": "Choose Pizza",
+          "text": "Choose Toppings",
           "size": "large",
           "weight": "bolder",
           "fontType": "Monospace"
