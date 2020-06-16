@@ -8,33 +8,54 @@
       "items": [
         {
           "type": "TextBlock",
-          "text": "Choose Pizza",
-          "size": "large",
-          "weight": "bolder",
+          "text": "Choose Toppings",
+          "size": "Large",
+          "weight": "Bolder",
           "fontType": "Monospace"
         },
         {
-          "type": "Input.ChoiceSet",
-          "choices": [
+          "type": "ColumnSet",
+          "columns": [
             {
-              "title": "Pepper",
-              "value": "Pepper"
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "Input.ChoiceSet",
+                  "choices": [
+                    {
+                      "title": "Pepper",
+                      "value": "Pepper"
+                    },
+                    {
+                      "title": "Extra Cheese",
+                      "value": "Extra_Cheese"
+                    },
+                    {
+                      "title": "Extra_Paneer",
+                      "value": "Extra_Paneer"
+                    }
+                  ],
+                  "id": "toppingsChoice",
+                  "placeholder": "Choose Toppings",
+                  "style": "expanded",
+                  "separator": true,
+                  "wrap": true,
+                  "isMultiSelect": true
+                }
+              ]
             },
             {
-              "title": "Extra Cheese",
-              "value": "Extra_Cheese"
-            },
-            {
-              "title": "Extra_Paneer",
-              "value": "Extra_Paneer"
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "Image",
+                  "url": "https://www.recipetineats.com/wp-content/uploads/2020/05/Pizza-Toppings.jpg"
+                }
+              ]
             }
-          ],
-          "id": "toppingsChoice",
-          "placeholder": "Choose Toppings",
-          "style": "expanded",
-          "separator": true,
-          "wrap": true,
-          "isMultiSelect": true
+          ]
         }
       ]
     },
