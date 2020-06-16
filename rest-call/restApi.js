@@ -47,3 +47,5 @@ class RestAPI {
       });
   }
 }
+
+module.exports.RestAPI = RestAPI;

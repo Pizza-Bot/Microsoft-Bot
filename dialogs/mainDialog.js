@@ -19,6 +19,9 @@ const toppingsChoiceCard = require("../resources/toppingsChoice.json");
 const userDetails = require("../resources/userDetails.json");
 
 const billForm = require("../resources/generateBill.json");
+const {
+  ModifyAdaptiveCard,
+} = require("../modifyAdaptiveCards/modifyAdaptiveCard");
 
 const CONV_PROFILE = "CONV_PROFILE";
 const TEXT_PROMPT = "TEXT_PROMPT";
@@ -71,6 +74,8 @@ class MainDialog extends ComponentDialog {
   async choosePizzaStep(step) {
     step.context.sendActivity("Now Choose the choice you want");
 
+    let choosePizzaCard = await ModifyAdaptiveCard.modifyChoosePizzaCard();
+
     const pizzaForm = MessageFactory.attachment(
       CardFactory.adaptiveCard(choosePizzaCard)
     );
@@ -96,9 +101,11 @@ class MainDialog extends ComponentDialog {
   async chooseSizeStep(step) {
     step.values.pizza = step.result.pizzachoice;
 
+    let sizesArray = await ModifyAdaptiveCard.getSizesArray();
+
     return await step.prompt(CHOICE_PROMPT, {
       prompt: "Please Enter your Pizza Size",
-      choices: ChoiceFactory.toChoices(["small", "medium", "large"]),
+      choices: ChoiceFactory.toChoices(sizesArray),
     });
   }
 
