@@ -1,6 +1,8 @@
 const axios = require("axios");
 
-const endpoint = "http://pizzabot.southeastasia.cloudapp.azure.com:8080/";
+// const endpoint = "http://pizzabot.southeastasia.cloudapp.azure.com:8080/";
+
+const endpoint = "http://localhost:8080/";
 
 class RestAPI {
   static async postCall(url, jsonObject) {

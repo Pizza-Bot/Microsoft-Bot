@@ -8,9 +8,9 @@
       "items": [
         {
           "type": "TextBlock",
-          "text": "Choose Toppings",
-          "size": "Large",
-          "weight": "Bolder",
+          "text": "Choose Toppings (Please choose atleast one)",
+          "size": "large",
+          "weight": "bolder",
           "fontType": "Monospace"
         },
         {

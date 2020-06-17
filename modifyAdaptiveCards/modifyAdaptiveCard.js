@@ -81,6 +81,10 @@ class ModifyAdaptiveCard {
   static async getToppingsCard() {
     let toppingsCardJson = JSON.parse(JSON.stringify(toppingsCard));
 
+    // let toppingsCardJson = toppingsCard;
+
+    toppingsCardJson.body.give = "value";
+
     const toppingsList = await ModifyAdaptiveCard.printingToppingsArray(
       "toppings",
       "toppingsName"
@@ -184,36 +188,13 @@ class ModifyAdaptiveCard {
 
     let totalOrderResponse = await RestAPI.postCall("totalorder", postJson);
 
-    this.totalOrder = totalOrderResponse;
+    this.totalOrder = JSON.parse(JSON.stringify(totalOrderResponse));
 
     return totalOrderResponse;
   }
 
-  static async postingUserDetails(userDetails) {
-    console.log(this.totalOrder);
-
-    let postJson = {
-      orderId: this.totalOrder.totalOrderId,
-      userName: userDetails.name,
-      userPhone: userDetails.phonenumber,
-      userAddress: userDetails.address,
-      // paymentMethod: "string",
-    };
-
-    let response = await RestAPI.postCall("userinfo", postJson);
-
-    console.log(response);
-  }
-
-  static generateUserDetailsForBill(userDetails) {
+  static async generateUserDetailsForBill(userDetails) {
     let facts = [];
-
-    // for (let i = 0; i < Object.keys(userDetails).length; i++) {
-    //   facts.push({
-    //     title: Object.keys(userDetails)[i],
-    //     value: userDetails[Object.keys(userDetails)],
-    //   });
-    // }
 
     Object.keys(userDetails).forEach(function (key) {
       var jsonValue = userDetails[key];
@@ -223,22 +204,101 @@ class ModifyAdaptiveCard {
     return facts;
   }
 
+  static async generatePizzaBill() {
+    let pizzaBill = [];
+
+    let totalOrderJson = this.totalOrder;
+
+    const capitalize = (s) => {
+      if (typeof s !== "string") return "";
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    };
+
+    pizzaBill.push({
+      title: `${capitalize(
+        totalOrderJson.pizzaOrders[0].realPizza.realPizzaName
+      )}`,
+      value: `${totalOrderJson.pizzaOrders[0].realPizza.basePizzaPrice}`,
+    });
+
+    pizzaBill.push({
+      title: `${capitalize(totalOrderJson.pizzaOrders[0].sizes.sizeName)}`,
+      value: `${totalOrderJson.pizzaOrders[0].sizes.sizePrice}`,
+    });
+
+    totalOrderJson.pizzaOrders[0].toppings.map((value) => {
+      pizzaBill.push({
+        title: `${capitalize(value.toppingsName)}`,
+        value: `${value.toppingsPrice}`,
+      });
+    });
+
+    pizzaBill.push({
+      title: `Price per Pizza`,
+      value: `${Math.floor(
+        totalOrderJson.pizzaOrders[0].pizzaCalculatedPrice /
+          totalOrderJson.pizzaOrders[0].quantity
+      )}`,
+    });
+
+    pizzaBill.push({
+      title: `Quantity`,
+      value: `${totalOrderJson.pizzaOrders[0].quantity}`,
+    });
+
+    return pizzaBill;
+  }
+
+  static async generateDiscountBill() {
+    let discountBill = [];
+
+    let totalOrderJson = this.totalOrder;
+
+    discountBill.push({
+      title: "Total Price",
+      value: `${totalOrderJson.rawTotal}`,
+    });
+
+    discountBill.push({
+      title: "Discounted Price",
+      value: `${totalOrderJson.discountedPrice}`,
+    });
+
+    return discountBill;
+  }
+
   static async modifyingBillCard(userDetails) {
-    // let generateBillJson = JSON.parse(JSON.stringify(generateBill));
+    let generateBillJson = JSON.parse(JSON.stringify(generateBill));
 
-    let generateBillJson = generateBill;
+    let userArrayDetails = await this.generateUserDetailsForBill(userDetails);
 
-    // delete generateBillJson.body[0].items[1].items[0]["facts"];
+    let pizzaArrayDetails = await this.generatePizzaBill();
 
-    let userArrayDetails = this.generateUserDetailsForBill(userDetails);
+    let discountArrayDetails = await this.generateDiscountBill();
 
-    // delete generateBillJson.body[1].facts;
+    // await this.generatePizzaBill();
 
     generateBillJson.body[1]["facts"] = [...userArrayDetails];
 
-    console.log(generateBillJson.body[1]["facts"]);
+    generateBillJson.body[3]["facts"] = [...pizzaArrayDetails];
+
+    generateBillJson.body[5]["facts"] = [...discountArrayDetails];
 
     return generateBillJson;
+  }
+
+  static async postingUserDetails(userDetails, paymentMethod) {
+    let postJson = {
+      orderId: this.totalOrder.totalOrderId,
+      userName: userDetails.name,
+      userPhone: userDetails.phonenumber,
+      userAddress: userDetails.address,
+      paymentMethod: paymentMethod,
+    };
+
+    let response = await RestAPI.postCall("userinfo", postJson);
+
+    return response;
   }
 }
 
