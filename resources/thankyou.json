@@ -1,0 +1,57 @@
+{
+  "type": "AdaptiveCard",
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.2",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Thank You!!!",
+      "horizontalAlignment": "Center",
+      "spacing": "ExtraLarge",
+      "size": "ExtraLarge",
+      "color": "Good"
+    },
+    {
+      "type": "ColumnSet",
+      "columns": [
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "Thank you for ordering pizza from Capgemini Pizza Store. \n\nPlease Click on the URL below to give feedback. We would like to know the ease and experience you've faced by using this simple Chat Bot\n",
+              "wrap": true
+            }
+          ],
+          "bleed": true,
+          "style": "default"
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "Image",
+              "url": "https://i.pinimg.com/236x/aa/6c/3c/aa6c3c64a845d6399b8d168485e94ca6--top-les-pet-products.jpg",
+              "altText": "hello"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "ActionSet",
+      "actions": [
+        {
+          "type": "Action.OpenUrl",
+          "id": "Feedback",
+          "url": "https://www.capgemini.com/",
+          "title": "Feedback",
+          "style": "positive"
+        }
+      ],
+      "id": "Openfeedback"
+    }
+  ]
+}

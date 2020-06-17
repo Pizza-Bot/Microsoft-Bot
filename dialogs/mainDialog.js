@@ -12,13 +12,13 @@ const {
 } = require("botbuilder-dialogs");
 const { MessageFactory, CardFactory, ActivityTypes } = require("botbuilder");
 
-const choosePizzaCard = require("../resources/choosePizza.json");
-
-const toppingsChoiceCard = require("../resources/toppingsChoice.json");
-
 const userDetails = require("../resources/userDetails.json");
 
-const billForm = require("../resources/generateBill.json");
+const thankYouCard = require("../resources/thankyou.json");
+
+const {
+  ModifyAdaptiveCard,
+} = require("../modifyAdaptiveCards/modifyAdaptiveCard");
 
 const CONV_PROFILE = "CONV_PROFILE";
 const TEXT_PROMPT = "TEXT_PROMPT";
@@ -28,6 +28,7 @@ const CONFIRM_PROMPT = "CONFIRM_PROMPT";
 const PIZZA_PROMPT = "PIZZA_PROMPT";
 const USER_PROMPT = "USER_PROMPT";
 const TOPPINGS_PROMPT = "TOPPINGS_PROMPT";
+const THANKYOU_PROMPT = "THANKYOU_PROMPT";
 const WATERFALL_DIALOG = "WATERFALL_DIALOG";
 
 class MainDialog extends ComponentDialog {
@@ -52,6 +53,7 @@ class MainDialog extends ComponentDialog {
     this.addDialog(
       new ActivityPrompt(USER_PROMPT, this.userDetailsFormValidator)
     );
+    this.addDialog(new ActivityPrompt(THANKYOU_PROMPT));
 
     this.addDialog(
       new WaterfallDialog(WATERFALL_DIALOG, [
@@ -70,6 +72,8 @@ class MainDialog extends ComponentDialog {
 
   async choosePizzaStep(step) {
     step.context.sendActivity("Now Choose the choice you want");
+
+    let choosePizzaCard = await ModifyAdaptiveCard.modifyChoosePizzaCard();
 
     const pizzaForm = MessageFactory.attachment(
       CardFactory.adaptiveCard(choosePizzaCard)
@@ -96,9 +100,11 @@ class MainDialog extends ComponentDialog {
   async chooseSizeStep(step) {
     step.values.pizza = step.result.pizzachoice;
 
+    let sizesArray = await ModifyAdaptiveCard.getSizesArray();
+
     return await step.prompt(CHOICE_PROMPT, {
       prompt: "Please Enter your Pizza Size",
-      choices: ChoiceFactory.toChoices(["small", "medium", "large"]),
+      choices: ChoiceFactory.toChoices(sizesArray),
     });
   }
 
@@ -107,8 +113,10 @@ class MainDialog extends ComponentDialog {
 
     await step.context.sendActivity(`You've selected ${step.values.size}`);
 
+    let chooseToppings = await ModifyAdaptiveCard.getToppingsCard();
+
     const toppingsForm = MessageFactory.attachment(
-      CardFactory.adaptiveCard(toppingsChoiceCard)
+      CardFactory.adaptiveCard(chooseToppings)
     );
 
     return await step.prompt(TOPPINGS_PROMPT, {
@@ -162,6 +170,15 @@ class MainDialog extends ComponentDialog {
   }
 
   async giveUserDetailsStep(step) {
+    // console.log(step.values.toppings.split(","));
+
+    let realPizzaJson = await ModifyAdaptiveCard.postingPizzaOrder(
+      step.values.pizza,
+      step.values.size,
+      step.values.quantity,
+      step.values.toppings.split(",")
+    );
+
     if (step.result) {
       let message = `Now please provide your details down below`;
 
@@ -197,8 +214,16 @@ class MainDialog extends ComponentDialog {
   async populateBillAndAskForPaymentOption(step) {
     step.values.userDetails = step.result;
 
+    await ModifyAdaptiveCard.postingTotalOrder();
+
+    // ModifyAdaptiveCard.postingUserDetails(step.result);
+
+    const billFormJson = await ModifyAdaptiveCard.modifyingBillCard(
+      step.result
+    );
+
     const userForm = MessageFactory.attachment(
-      CardFactory.adaptiveCard(billForm)
+      CardFactory.adaptiveCard(billFormJson)
     );
 
     await step.context.sendActivity(userForm);
@@ -229,11 +254,20 @@ class MainDialog extends ComponentDialog {
   async summary(step) {
     step.values.paymentMethod = step.result;
 
-    console.log(step.result);
+    let response = await ModifyAdaptiveCard.postingUserDetails(
+      step.values.userDetails,
+      step.result.value
+    );
 
     let message = `Congratulations!, you've ordered ${step.values.quantity} ${step.values.size} ${step.values.pizza} with ${step.values.toppings} toppings `;
 
     await step.context.sendActivity(message);
+
+    const thankYou = MessageFactory.attachment(
+      CardFactory.adaptiveCard(thankYouCard)
+    );
+
+    await step.context.sendActivity(thankYou);
 
     return await step.endDialog();
   }
