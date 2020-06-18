@@ -8,8 +8,7 @@
       "text": "Thank You!!!",
       "horizontalAlignment": "Center",
       "spacing": "ExtraLarge",
-      "size": "ExtraLarge",
-      "color": "Good"
+      "size": "ExtraLarge"
     },
     {
       "type": "ColumnSet",
