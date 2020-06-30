@@ -4,29 +4,28 @@ Order Pizza
 
 This bot has been created using [Bot Framework](https://dev.botframework.com), it provides a minimal skeleton of a bot.
 
-
 ## Prerequisites
 
 - [Node.js](https://nodejs.org) version 10.14.1 or higher
 
-    ```bash
-    # determine node version
-    node --version
-    ```
+  ```bash
+  # determine node version
+  node --version
+  ```
 
 ## To run the bot
 
 - Install modules
 
-    ```bash
-    npm install
-    ```
+  ```bash
+  npm install
+  ```
 
 - Start the bot
 
-    ```bash
-    npm start
-    ```
+  ```bash
+  npm start
+  ```
 
 ## Testing the bot using Bot Framework Emulator
 
@@ -40,10 +39,9 @@ This bot has been created using [Bot Framework](https://dev.botframework.com), i
 - File -> Open Bot
 - Enter a Bot URL of `http://localhost:3978/api/messages`
 
-
 ## Deploy the bot to Azure
 
-This bot was generated using the Empty bot template.  Unmodified, it's not practical to deploy an empty bot to Azure, as it doesn't have any conversational behavior yet.
+This bot was generated using the Empty bot template. Unmodified, it's not practical to deploy an empty bot to Azure, as it doesn't have any conversational behavior yet.
 After making modifications to the bot and testing it locally, you can deploy it to Azure to make it accessible from anywhere.
 To learn how, see [Deploy your bot to Azure](https://aka.ms/azuredeployment) for a complete set of deployment instructions.
 
